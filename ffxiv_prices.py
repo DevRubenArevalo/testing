@@ -2,6 +2,8 @@
 #It retrieves the top 5 sales for each item in the specified list  
 import requests
 import json
+import datetime
+import time
 
 # === Mapping dictionaries ===
 ITEM_NAMES = {
@@ -140,6 +142,8 @@ url = "https://universalis.app/api/v2/history/North-America/39474,36255,41758?mi
 r = requests.get(url)
 data = r.json()
 print(f"Fetching data from Universalis API...")
+print(f"Data fetched successfully. Number of items: {len(data['items'])}")
+print(f"Today's date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 sales_output = []
 for item_id, item_data in data['items'].items():
     item_name = ITEM_NAMES.get(str(item_id), f"Unknown ({item_id})")
@@ -154,5 +158,5 @@ for item_id, item_data in data['items'].items():
             "quantity": quantity,
             "price_per_unit": pricePerUnit
         })
-
+    time.sleep(1/24)  # Sleep  for 1/24th of a second to avoid hitting API rate limits
 print(json.dumps(sales_output, ensure_ascii=False, indent=2))
