@@ -1,6 +1,7 @@
 #This fetches data from the Universalis API for FFXIV items
 #It retrieves the top 5 sales for each item in the specified list  
 import requests
+import json
 
 # === Mapping dictionaries ===
 ITEM_NAMES = {
@@ -139,11 +140,19 @@ url = "https://universalis.app/api/v2/history/North-America/39474,36255,41758?mi
 r = requests.get(url)
 data = r.json()
 print(f"Fetching data from Universalis API...")
-print("Item ID, Item Name, Quantity, Price per Unit")
-
+sales_output = []
 for item_id, item_data in data['items'].items():
-    for sale in item_data['entries'][:5]:    #  "Show the top 5 sales per line
+    item_name = ITEM_NAMES.get(str(item_id), f"Unknown ({item_id})")
+    for sale in item_data['entries'][:5]:    # Show the top 5 sales per item
         quantity = sale['quantity']
         pricePerUnit = sale['pricePerUnit']
-        worldID = item_data['worldID']
-        print(f"{worldID}, {item_data['itemID']}, {quantity}, {pricePerUnit}")
+        worldID = sale['worldID']
+        world_name = WORLD_IDS.get(worldID, f"Unknown ({worldID})")
+        sales_output.append({
+            "world": world_name,
+            "item_name": item_name,
+            "quantity": quantity,
+            "price_per_unit": pricePerUnit
+        })
+
+print(json.dumps(sales_output, ensure_ascii=False, indent=2))
