@@ -5,6 +5,16 @@ import json
 import datetime
 import time
 
+def get_item_name(item_id, filename='items.json'):
+    with open(filename, 'r', encoding='utf-8') as f:
+        item_dict = json.load(f)
+    return item_dict.get(str(item_id), "Unknown Item")
+
+# Example usage:
+# item_id = "10001"
+# item_name = get_item_name(item_id)
+# print(f"Item name for ID {item_id}: {item_name}")
+
 # === Mapping dictionaries ===
 ITEM_NAMES = {
     "39474": "Corgi",
@@ -143,7 +153,7 @@ r = requests.get(url)
 data = r.json()
 print(f"Fetching data from Universalis API...")
 print(f"Data fetched successfully. Number of items: {len(data['items'])}")
-print(f"Today's date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+print(f"Today's date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 sales_output = []
 for item_id, item_data in data['items'].items():
     item_name = ITEM_NAMES.get(str(item_id), f"Unknown ({item_id})")
